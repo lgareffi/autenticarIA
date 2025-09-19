@@ -3,6 +3,6 @@
   "python.terminal.activateEnvironment": true,
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.env.windows": {
-    "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+    "PATH": "C:\\Program Files\\Tesseract-OCR;C:\\Users\\Luchi\\AppData\\Local\\Microsoft\\WinGet\\Packages\\oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe\\poppler-25.07.0\\Library\\bin;C:\\Users\\Luchi\\AppData\\Local\\Programs\\ExifTool;${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
   }
 }
