@@ -15,6 +15,7 @@ pdfminer.six
 pillow
 opencv-python
 pytesseract
+beautifulsoup4
 
 # --- ML clásico (para el primer modelo) ---
 numpy

@@ -1,1 +1,30 @@
-#configuración (umbrales, paths, flags) – puede estar vacío con claves placeholder.
+service:
+  name: autenticar-ia
+  version: mvp-1
+  host: 0.0.0.0
+  port: 8000
+  require_api_key: false   # ponelo true en prod y usa .env
+
+security:
+  api_key_env: IA_API_KEY  # nombre de la variable de entorno
+
+paths:
+  workdir: "./data/work"   # carpeta temporal para procesar
+  keep_temp: false         # true para depurar
+
+limits:
+  max_bytes: 15728640      
+  allowed_ext: [".pdf", ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp", ".html", ".htm"]
+
+ocr:
+  default_lang: "spa"       
+  pdf_render_dpi: 300
+
+thresholds:
+  low: 0.35
+  high: 0.65
+
+features:
+  enable_visual: true
+  enable_text: true
+  enable_metadata: true
