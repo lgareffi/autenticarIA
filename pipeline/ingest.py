@@ -1,0 +1,1 @@
+#lectura de PDF/imagen y normalización básica.

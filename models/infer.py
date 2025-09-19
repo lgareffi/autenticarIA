@@ -1,0 +1,1 @@
+#función que aplica el modelo + reglas/umbrales (luego).

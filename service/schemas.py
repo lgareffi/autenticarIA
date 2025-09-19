@@ -1,0 +1,1 @@
+#definición de rutas (ej. /health, /score).

@@ -1,0 +1,1 @@
+#lectura de EXIF/PDF (luego).

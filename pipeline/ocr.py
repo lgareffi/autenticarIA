@@ -1,0 +1,1 @@
+#integración con OCR (luego se implementa).
