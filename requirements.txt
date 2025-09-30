@@ -19,4 +19,7 @@ beautifulsoup4
 
 # --- ML clásico (para el primer modelo) ---
 numpy
-scikit-learn
+pandas
+scikit-learn>=1.4
+joblib
+kaggle
