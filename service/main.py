@@ -46,5 +46,5 @@ def health():
     return {"status": "ok", "version": CONFIG["service"]["version"], "time": int(time.time())}
 
 # Registrar rutas del servicio
-from service.routes import router as score_router  # noqa
-app.include_router(score_router)
+from service.routes import router as ai_router
+app.include_router(ai_router)
