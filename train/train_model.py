@@ -11,8 +11,8 @@ DATA = ROOT / "data" / "dataset_autenticarIA200.csv"
 MODELS = ROOT / "models"
 MODELS.mkdir(exist_ok=True)
 
-TARGET_COL = "y_score_1_100"   # en tu CSV
-LABEL_COL  = "y_label"         # categórica (no se usa para entrenar)
+TARGET_COL = "y_score_1_100"   
+LABEL_COL  = "y_label"         
 
 # columnas que seguro NO van como features
 DROP_EXPLICIT = {
@@ -26,11 +26,9 @@ def load_dataset(path: pathlib.Path) -> pd.DataFrame:
     return df
 
 def build_matrices(df: pd.DataFrame):
-    # quedate con numéricas + booleanas
     candidates = [c for c in df.columns if c not in DROP_EXPLICIT]
     X = df[candidates].copy()
 
-    # castear bool->int y rellenar nulos
     for c in X.columns:
         if X[c].dtype == bool:
             X[c] = X[c].astype(int)
@@ -38,7 +36,6 @@ def build_matrices(df: pd.DataFrame):
 
     y = df[TARGET_COL].astype(float)
 
-    # normalizar target a [0,1] internamente (opcional)
     y01 = (y - y.min()) / (y.max() - y.min()) if y.max() > y.min() else y / 100.0
 
     feature_spec = {
