@@ -1,6 +1,6 @@
 #lista de dependencias
 
-# --- Servicio web ---
+# Servicio web
 fastapi
 uvicorn[standard]
 pydantic
@@ -9,7 +9,7 @@ python-dotenv
 tqdm
 requests
 
-# --- PDF / Imágenes / OCR ---
+# PDF / Imágenes / OCR
 pypdf
 pdfminer.six
 pillow
@@ -17,7 +17,7 @@ opencv-python
 pytesseract
 beautifulsoup4
 
-# --- ML clásico (para el primer modelo) ---
+# Machine Learning
 numpy
 pandas
 scikit-learn>=1.4

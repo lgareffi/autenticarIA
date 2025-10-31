@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 import pytesseract
 from PIL import Image
-import os, time
+import time
 
 def ocr_images(images: List[str], lang: str = "spa") -> Dict[str, Any]:
     texts, per_page = [], []

@@ -1,7 +1,6 @@
 import os, time, yaml
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from fastapi.openapi.utils import get_openapi
 
 APP_YAML = os.environ.get("APP_CONFIG", "configs/app.yaml")
@@ -20,7 +19,6 @@ def custom_openapi():
         description=app.description,
         routes=app.routes,
     )
-    # Si existe /score-multipart, borramos la respuesta 422 para "limpiar" la vista
     try:
         schema["paths"]["/score-multipart"]["post"]["responses"].pop("422", None)
     except KeyError:
@@ -30,14 +28,12 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-# CORS abierto en dev (ajustá en prod)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], allow_credentials=True,
     allow_methods=["*"], allow_headers=["*"],
 )
 
-# Exponer config a otros módulos
 def get_config():
     return CONFIG
 
@@ -45,6 +41,6 @@ def get_config():
 def health():
     return {"status": "ok", "version": CONFIG["service"]["version"], "time": int(time.time())}
 
-# Registrar rutas del servicio
+
 from service.routes import router as ai_router
 app.include_router(ai_router)

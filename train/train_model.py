@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score
 import joblib
-import numpy as np
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "dataset_autenticarIA200.csv"
@@ -14,7 +13,6 @@ MODELS.mkdir(exist_ok=True)
 TARGET_COL = "y_score_1_100"   
 LABEL_COL  = "y_label"         
 
-# columnas que seguro NO van como features
 DROP_EXPLICIT = {
     "doc_id", "tipo_doc", "file_ext", "document_language",
     "meta_producer", "meta_creator", "meta_createdate", "meta_modifydate",
@@ -73,7 +71,6 @@ if __name__ == "__main__":
 
     print(f"MAE={mae:.4f} | RMSE={rmse:.4f} | R2={r2:.4f}")
 
-    # guardar
     joblib.dump(model, MODELS / "rf_model.pkl")
     with open(MODELS / "feature_spec.json", "w", encoding="utf-8") as f:
         json.dump(feature_spec, f, ensure_ascii=False, indent=2)

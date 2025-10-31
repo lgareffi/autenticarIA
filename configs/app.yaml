@@ -3,14 +3,14 @@ service:
   version: mvp-1
   host: 0.0.0.0
   port: 8000
-  require_api_key: false   # ponelo true en prod y usa .env
+  require_api_key: false   
 
 security:
-  api_key_env: IA_API_KEY  # nombre de la variable de entorno
+  api_key_env: IA_API_KEY  
 
 paths:
-  workdir: "./data/work"   # carpeta temporal para procesar
-  keep_temp: false         # true para depurar
+  workdir: "./data/work"   
+  keep_temp: false         
 
 limits:
   max_bytes: 15728640      

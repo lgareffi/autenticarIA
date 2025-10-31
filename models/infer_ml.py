@@ -2,8 +2,6 @@ import json, pathlib
 import joblib
 import numpy as np
 from typing import Dict, Any
-
-# Reutilizamos tu pipeline actual
 from pipeline.ingest import sniff_ext, pdf_to_images, html_to_text
 from pipeline.ocr import ocr_images
 from pipeline.metadata import read_metadata_exiftool
@@ -12,20 +10,16 @@ from pipeline.features import summarize_text, reasons_from_metadata, reasons_fro
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MODELS = ROOT / "models"
 
-# carga artefactos
 _model = joblib.load(MODELS / "rf_model.pkl")
 _spec  = json.loads((MODELS / "feature_spec.json").read_text(encoding="utf-8"))
 _FEATURES = _spec["features"]
 
 def _build_feature_row(meta: dict, texts: list, images: list) -> Dict[str, Any]:
-    # Basado en tu features.py y lo que está en el CSV
-    # Derivamos las mismas señales que luego matchean columnas del dataset
     text_summary = summarize_text(texts)
     r_meta = reasons_from_metadata(meta)
     r_text = reasons_from_text(texts, text_summary)
     r_img  = reasons_from_images(images)
 
-    # partir de los campos del CSV que ya existen:
     features: Dict[str, Any] = {
         "num_pages": text_summary.get("pages", len(texts) or len(images)),
         "file_size_bytes": int(meta.get("FileSize") or 0),
@@ -44,7 +38,6 @@ def _build_feature_row(meta: dict, texts: list, images: list) -> Dict[str, Any]:
         "min_resolution_px": int(text_summary.get("min_resolution_px", 0)),
         "low_res_flag": int(text_summary.get("low_res_flag", False)),
         "dpi_used": int(text_summary.get("dpi_used", 300)),
-        # reglas → flags (coinciden con tus columnas rule_*)
         "rule_IMAGE_LOW_RES": int(any(k=="IMAGE_LOW_RES" for k,_,_ in r_img)),
         "rule_META_PRODUCER_UNKNOWN": int(any(k=="META_PRODUCER_UNKNOWN" for k,_,_ in r_meta)),
         "rule_META_PRODUCER_MISSING": int(any(k=="META_PRODUCER_MISSING" for k,_,_ in r_meta)),
@@ -60,13 +53,11 @@ def _build_feature_row(meta: dict, texts: list, images: list) -> Dict[str, Any]:
         "reasons_count": int(len(r_meta)+len(r_text)+len(r_img)),
     }
 
-    # asegurar las columnas exactas del spec
     row = {c: 0 for c in _FEATURES}
     row.update({k: features.get(k, 0) for k in _FEATURES})
     return row, (r_meta + r_text + r_img), text_summary
 
 def analyze_document_ml(local_path: str, language: str = "spa") -> Dict[str, Any]:
-    # 1) Páginas/imágenes
     ext = sniff_ext(local_path)
     is_pdf = ext == ".pdf"
     is_html = ext in (".html", ".htm")
@@ -82,7 +73,6 @@ def analyze_document_ml(local_path: str, language: str = "spa") -> Dict[str, Any
     else:
         per_page_images = [local_path]
 
-    # 2) OCR o texto
     ocr = {"texts": [], "stats": {"pages": 0, "total_chars": 0, "time_ms": 0}}
     if is_html:
         text = html_to_text(local_path)
@@ -91,17 +81,13 @@ def analyze_document_ml(local_path: str, language: str = "spa") -> Dict[str, Any
     else:
         ocr = ocr_images(per_page_images, lang=language)
 
-    # 3) Metadatos
     meta = read_metadata_exiftool(local_path)
 
-    # 4) Features y predicción
     row, reasons_all, text_summary = _build_feature_row(meta, ocr["texts"], per_page_images)
     X = np.array([[row[c] for c in _FEATURES]])
     y01 = float(_model.predict(X)[0])
-    # revertir a escala 1–100 (misma convención del dataset)
     y_score_1_100 = max(0.0, min(100.0, y01 * 100.0))
 
-    # mapeo simple a etiquetas (podés calibrar umbrales)
     label = "LOW" if y01 < 0.34 else "MEDIUM" if y01 < 0.67 else "HIGH"
 
     return {
